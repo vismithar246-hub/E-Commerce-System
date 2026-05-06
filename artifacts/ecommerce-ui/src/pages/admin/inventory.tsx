@@ -36,11 +36,14 @@ export default function AdminInventory() {
   const queryClient = useQueryClient();
   const [selectedProductId, setSelectedProductId] = useState<number | "all">("all");
   
-  const { data: logs, isLoading: logsLoading } = useListInventoryLogs({ 
+  const { data: logsRaw, isLoading: logsLoading } = useListInventoryLogs({ 
     productId: selectedProductId === "all" ? undefined : selectedProductId 
   });
-  
-  const { data: products } = useListProducts();
+  const logs = Array.isArray(logsRaw) ? logsRaw : [];
+
+  const { data: productsRaw } = useListProducts();
+  const products = Array.isArray(productsRaw) ? productsRaw : [];
+
   const updateInventory = useUpdateInventory();
 
   const [updateForm, setUpdateForm] = useState({
@@ -70,7 +73,7 @@ export default function AdminInventory() {
     }
   };
 
-  const lowStockProducts = products?.filter(p => p.isLowStock) || [];
+  const lowStockProducts = products.filter(p => p.isLowStock);
 
   return (
     <AdminLayout>
@@ -126,7 +129,7 @@ export default function AdminInventory() {
                       <SelectValue placeholder="Select Asset ID" />
                     </SelectTrigger>
                     <SelectContent className="glass-panel border-white/10">
-                      {products?.map(p => (
+                      {products.map(p => (
                         <SelectItem key={p.productId} value={p.productId.toString()} className="font-mono text-xs">
                           {p.productId.toString().padStart(4, '0')} - {p.productName}
                         </SelectItem>
@@ -171,7 +174,7 @@ export default function AdminInventory() {
                   </SelectTrigger>
                   <SelectContent className="glass-panel border-white/10">
                     <SelectItem value="all" className="font-mono text-xs">All Assets</SelectItem>
-                    {products?.map(p => (
+                    {products.map(p => (
                       <SelectItem key={p.productId} value={p.productId.toString()} className="font-mono text-xs">
                         {p.productId.toString().padStart(4, '0')} - {p.productName}
                       </SelectItem>
@@ -202,13 +205,13 @@ export default function AdminInventory() {
                           <TableCell><Skeleton className="h-6 w-32 bg-white/5 mx-auto" /></TableCell>
                         </TableRow>
                       ))
-                    ) : logs?.length === 0 ? (
+                    ) : logs.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={4} className="text-center py-12 text-muted-foreground">
                           No log entries found.
                         </TableCell>
                       </TableRow>
-                    ) : logs?.map((log) => {
+                    ) : logs.map((log) => {
                       const diff = log.stockAfter - log.stockBefore;
                       const isIncrease = diff > 0;
                       const isDecrease = diff < 0;

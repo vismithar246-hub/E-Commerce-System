@@ -38,7 +38,8 @@ export default function AdminProducts() {
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: products, isLoading } = useListProducts({ search });
+  const { data: productsRaw, isLoading } = useListProducts({ search });
+  const products = Array.isArray(productsRaw) ? productsRaw : [];
   
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
@@ -187,13 +188,13 @@ export default function AdminProducts() {
                     <TableCell><Skeleton className="h-8 w-16 bg-white/5 ml-auto" /></TableCell>
                   </TableRow>
                 ))
-              ) : products?.length === 0 ? (
+              ) : products.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     No assets found in database.
                   </TableCell>
                 </TableRow>
-              ) : products?.map((product) => (
+              ) : products.map((product) => (
                 <TableRow key={product.productId} className="border-white/10 hover:bg-white/5 transition-colors">
                   <TableCell className="font-mono text-xs text-muted-foreground">
                     {product.productId.toString().padStart(6, '0')}

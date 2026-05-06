@@ -26,9 +26,13 @@ import {
 
 export default function AdminDashboard() {
   const { data: stats, isLoading: statsLoading } = useGetDashboardStats();
-  const { data: salesTrend, isLoading: trendLoading } = useGetSalesTrend({ days: 30 });
-  const { data: categorySales, isLoading: categoryLoading } = useGetSalesByCategory();
-  const { data: inventoryStatus, isLoading: inventoryLoading } = useGetInventoryStatus();
+  const { data: salesTrendRaw, isLoading: trendLoading } = useGetSalesTrend({ days: 30 });
+  const { data: categorySalesRaw, isLoading: categoryLoading } = useGetSalesByCategory();
+  const { data: inventoryStatusRaw, isLoading: inventoryLoading } = useGetInventoryStatus();
+
+  const salesTrend = Array.isArray(salesTrendRaw) ? salesTrendRaw : [];
+  const categorySales = Array.isArray(categorySalesRaw) ? categorySalesRaw : [];
+  const inventoryStatus = Array.isArray(inventoryStatusRaw) ? inventoryStatusRaw : [];
 
   const COLORS = ['#8a2be2', '#4169e1', '#00ced1', '#32cd32', '#ff8c00', '#ff1493'];
 

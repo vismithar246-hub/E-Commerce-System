@@ -17,10 +17,13 @@ import { Badge } from "@/components/ui/badge";
 export default function AdminCustomers() {
   const [search, setSearch] = useState("");
   
-  const { data: customers, isLoading: customersLoading } = useListCustomers({ search });
-  const { data: topCustomers, isLoading: topLoading } = useGetTopCustomers({ limit: 5 });
+  const { data: customersRaw, isLoading: customersLoading } = useListCustomers({ search });
+  const customers = Array.isArray(customersRaw) ? customersRaw : [];
 
-  const topIds = topCustomers?.map(c => c.customerId) || [];
+  const { data: topCustomersRaw, isLoading: topLoading } = useGetTopCustomers({ limit: 5 });
+  const topCustomers = Array.isArray(topCustomersRaw) ? topCustomersRaw : [];
+
+  const topIds = topCustomers.map(c => c.customerId);
 
   return (
     <AdminLayout>
@@ -41,7 +44,7 @@ export default function AdminCustomers() {
               Array(5).fill(0).map((_, i) => (
                 <Skeleton key={i} className="h-32 w-full rounded-xl bg-white/5 border border-white/10" />
               ))
-            ) : topCustomers?.map((top) => (
+            ) : topCustomers.map((top) => (
               <div key={top.customerId} className="glass-panel border border-primary/30 bg-primary/5 rounded-xl p-4 flex flex-col gap-3 relative overflow-hidden">
                 <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 rounded-full blur-xl pointer-events-none" />
                 <div className="font-bold truncate">{top.name}</div>
@@ -90,13 +93,13 @@ export default function AdminCustomers() {
                       <TableCell><Skeleton className="h-6 w-16 bg-white/5 ml-auto" /></TableCell>
                     </TableRow>
                   ))
-                ) : customers?.length === 0 ? (
+                ) : customers.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                       No entities match the current query.
                     </TableCell>
                   </TableRow>
-                ) : customers?.map((customer) => (
+                ) : customers.map((customer) => (
                   <TableRow key={customer.customerId} className="border-white/10 hover:bg-white/5 transition-colors">
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       E-{customer.customerId.toString().padStart(5, '0')}

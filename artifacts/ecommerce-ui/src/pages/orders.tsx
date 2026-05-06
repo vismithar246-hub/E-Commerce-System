@@ -11,11 +11,10 @@ import { format } from "date-fns";
 export default function Orders() {
   const [search, setSearch] = useState("");
   
-  // Note: we fetch all and filter client side since the API only supports status/customerId filters,
-  // but a user might want to search by order ID or name
-  const { data: orders, isLoading } = useListOrders();
+  const { data: ordersRaw, isLoading } = useListOrders();
+  const orders = Array.isArray(ordersRaw) ? ordersRaw : [];
 
-  const filteredOrders = orders?.filter(order => {
+  const filteredOrders = orders.filter(order => {
     if (!search) return true;
     const searchLower = search.toLowerCase();
     return (
@@ -81,7 +80,7 @@ export default function Orders() {
                 </div>
               </div>
             ))
-          ) : filteredOrders?.length === 0 ? (
+          ) : filteredOrders.length === 0 ? (
             <div className="py-20 flex flex-col items-center justify-center text-center border border-white/10 border-dashed rounded-xl">
               <ListOrdered className="w-16 h-16 text-muted-foreground mb-4 opacity-20" />
               <h3 className="text-xl font-semibold mb-2">No logs found</h3>
@@ -89,7 +88,7 @@ export default function Orders() {
                 No transactions match the current query parameters.
               </p>
             </div>
-          ) : filteredOrders?.map((order) => (
+          ) : filteredOrders.map((order) => (
             <div key={order.orderId} className="glass-panel border border-white/10 rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-6 justify-between group hover:border-primary/30 transition-colors">
               <div className="flex items-start sm:items-center gap-4">
                 <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/5 flex items-center justify-center shrink-0">
@@ -113,7 +112,7 @@ export default function Orders() {
                 </div>
                 <div className="flex flex-col items-end pl-6 border-l border-white/10">
                   <div className="text-xs text-muted-foreground font-mono mb-1 uppercase tracking-wider">Items</div>
-                  <div className="font-mono font-bold">{order.items?.length || 0}</div>
+                  <div className="font-mono font-bold">{Array.isArray(order.items) ? order.items.length : 0}</div>
                 </div>
               </div>
             </div>

@@ -13,18 +13,19 @@ export default function Products() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   
-  // Simple debounce
   React.useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 500);
     return () => clearTimeout(timer);
   }, [search]);
 
-  const { data: products, isLoading: isLoadingProducts } = useListProducts({
+  const { data: productsRaw, isLoading: isLoadingProducts } = useListProducts({
     search: debouncedSearch || undefined,
     category: selectedCategory || undefined,
   });
+  const products = Array.isArray(productsRaw) ? productsRaw : [];
 
-  const { data: categories } = useListCategories();
+  const { data: categoriesRaw } = useListCategories();
+  const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
 
   return (
     <Layout>
@@ -57,7 +58,7 @@ export default function Products() {
             >
               All Types
             </Badge>
-            {categories?.map(category => (
+            {categories.map(category => (
               <Badge 
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"} 
@@ -104,7 +105,7 @@ export default function Products() {
                 </div>
               </div>
             ))
-          ) : products?.length === 0 ? (
+          ) : products.length === 0 ? (
             <div className="col-span-full py-20 flex flex-col items-center justify-center text-center border border-white/10 border-dashed rounded-xl">
               <Package className="w-16 h-16 text-muted-foreground mb-4 opacity-20" />
               <h3 className="text-xl font-semibold mb-2">No matching assets</h3>
@@ -112,7 +113,7 @@ export default function Products() {
                 Your query returned zero results. Adjust filters or search terms to find available products.
               </p>
             </div>
-          ) : products?.map((product) => (
+          ) : products.map((product) => (
             <Link key={product.productId} href={`/products/${product.productId}`}>
               <div className="group p-4 rounded-xl border border-white/10 glass-panel hover:border-primary/50 transition-all hover-elevate cursor-pointer h-full flex flex-col relative overflow-hidden">
                 {product.isLowStock && (

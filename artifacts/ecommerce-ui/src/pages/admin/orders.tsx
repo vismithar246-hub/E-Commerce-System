@@ -30,7 +30,8 @@ type UpdateOrderStatusBodyStatus = "pending" | "processing" | "shipped" | "deliv
 
 export default function AdminOrders() {
   const queryClient = useQueryClient();
-  const { data: orders, isLoading } = useListOrders();
+  const { data: ordersRaw, isLoading } = useListOrders();
+  const orders = Array.isArray(ordersRaw) ? ordersRaw : [];
   const updateStatus = useUpdateOrderStatus();
 
   const handleStatusChange = async (orderId: number, status: UpdateOrderStatusBodyStatus) => {
@@ -96,13 +97,13 @@ export default function AdminOrders() {
                     <TableCell><Skeleton className="h-8 w-24 bg-white/5 ml-auto" /></TableCell>
                   </TableRow>
                 ))
-              ) : orders?.length === 0 ? (
+              ) : orders.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     No orders exist in the system.
                   </TableCell>
                 </TableRow>
-              ) : orders?.map((order) => (
+              ) : orders.map((order) => (
                 <TableRow key={order.orderId} className="border-white/10 hover:bg-white/5 transition-colors">
                   <TableCell className="font-mono font-bold text-white glow-text">
                     #{order.orderId.toString().padStart(6, '0')}
