@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { db, inventoryLogsTable, productsTable } from "@workspace/db";
 import { ListInventoryLogsQueryParams } from "@workspace/api-zod";
 
@@ -28,7 +28,7 @@ router.get("/inventory/logs", async (req, res): Promise<void> => {
     .from(inventoryLogsTable)
     .innerJoin(productsTable, eq(inventoryLogsTable.productId, productsTable.productId))
     .where(productId ? eq(inventoryLogsTable.productId, productId) : undefined)
-    .orderBy(inventoryLogsTable.updatedAt);
+    .orderBy(desc(inventoryLogsTable.updatedAt));
 
   res.json(
     logs.map((l) => ({

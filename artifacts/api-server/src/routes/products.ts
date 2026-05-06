@@ -163,17 +163,18 @@ router.delete("/products/:productId", async (req, res): Promise<void> => {
 
 // POST /inventory/update — manually update stock, logs the change
 router.post("/inventory/update", async (req, res): Promise<void> => {
-  const parsed = req.body as { productId: number; newStock: number };
-
-  if (typeof parsed.productId !== "number" || typeof parsed.newStock !== "number") {
-    res.status(400).json({ error: "productId and newStock are required numbers" });
+  const { UpdateInventoryBody } = await import("@workspace/api-zod");
+  const parsed = UpdateInventoryBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
     return;
   }
+  const { productId, newStock } = parsed.data;
 
   const [existing] = await db
     .select()
     .from(productsTable)
-    .where(eq(productsTable.productId, parsed.productId));
+    .where(eq(productsTable.productId, productId));
 
   if (!existing) {
     res.status(404).json({ error: "Product not found" });
@@ -182,15 +183,15 @@ router.post("/inventory/update", async (req, res): Promise<void> => {
 
   // Log inventory change before updating
   await db.insert(inventoryLogsTable).values({
-    productId: parsed.productId,
+    productId,
     stockBefore: existing.stockQuantity,
-    stockAfter: parsed.newStock,
+    stockAfter: newStock,
   });
 
   const [updated] = await db
     .update(productsTable)
-    .set({ stockQuantity: parsed.newStock })
-    .where(eq(productsTable.productId, parsed.productId))
+    .set({ stockQuantity: newStock })
+    .where(eq(productsTable.productId, productId))
     .returning();
 
   res.json(withLowStock(updated));
