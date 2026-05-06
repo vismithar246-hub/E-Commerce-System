@@ -1,45 +1,64 @@
-# [Project name]
+# E-Commerce Inventory & Sales System
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A full-stack DBMS mini project featuring a futuristic dark UI for browsing products, placing orders, and managing inventory with a full admin command center.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
+- `pnpm --filter @workspace/ecommerce-ui run dev` — run the React frontend (port 3000)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `DATABASE_URL` — Postgres connection string (auto-set by Replit DB)
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
+- Frontend: React + Vite, Tailwind CSS, Recharts, Zustand (cart state), wouter routing
+- API: Express 5 + Drizzle ORM
+- DB: PostgreSQL (Replit managed)
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — OpenAPI contract (source of truth)
+- `lib/api-client-react/src/generated/` — generated React Query hooks
+- `lib/api-zod/src/generated/` — generated Zod validation schemas
+- `lib/db/src/schema/` — Drizzle table definitions (customers, products, orders, orderDetails, inventoryLogs)
+- `artifacts/api-server/src/routes/` — Express route handlers (products, customers, orders, inventory, analytics)
+- `artifacts/ecommerce-ui/src/pages/` — React pages (customer + admin)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- **PostgreSQL over MySQL**: Functionally equivalent for all DBMS concepts; Replit provides managed Postgres
+- **Trigger-as-code**: Order placement route auto-reduces stock and writes inventory_logs (implements TRIGGER concept in application layer)
+- **Analytics via raw SQL**: Complex joins, aggregates, GROUP BY, and subqueries in `analytics.ts` routes for DBMS concept demonstration
+- **Zustand for cart**: Cart state is local-only (no backend cart endpoint), converted to an order on checkout
+- **Port 3000**: Changed from auto-assigned port 22674 to 3000 for workflow manager compatibility
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- **Customer**: Browse products by category/search, view product details, add to cart, place orders, view order history
+- **Admin**: Full product CRUD, order status management, customer directory, inventory logs with stock alerts, dashboard with charts (sales trend, category revenue, inventory by category)
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Tech stack specified: Node.js + Express backend, PostgreSQL DB (MySQL equivalent concepts), React+Vite frontend
+- Futuristic dark theme with blue/purple gradients, glassmorphism UI
+- DBMS concepts: PK/FK, joins, aggregates, normalization (3NF), triggers, GROUP BY, subqueries
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Always run codegen after changing `openapi.yaml`: `pnpm --filter @workspace/api-spec run codegen`
+- After DB schema changes: `pnpm --filter @workspace/db run push`
+- `lib/api-zod/src/index.ts` only re-exports from `./generated/api` to avoid duplicate export conflicts with `./generated/types`
+- Vite 7 exits in non-TTY mode — handled via `server.stdin: false` in `vite.config.ts`
 
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- `artifacts/api-server/src/routes/orders.ts` — order placement + inventory auto-update (trigger concept)
+- `artifacts/api-server/src/routes/analytics.ts` — all SQL aggregates, joins, GROUP BY demonstrations

@@ -1,0 +1,218 @@
+Build a full-stack web application called:
+
+“E-Commerce Inventory & Sales System”
+
+The project is a DBMS Mini Project and should focus strongly on database concepts while also having a modern and attractive UI.
+
+⚠️ IMPORTANT:
+- Build the project completely using:
+  - Frontend: HTML, CSS, JavaScript
+  - Backend: Node.js + Express.js
+  - Database: MySQL
+- The project should be beginner-friendly, modular, and easy to explain during viva.
+- Include comments in the code explaining important parts.
+
+====================================================
+🎨 UI / DESIGN REQUIREMENTS
+====================================================
+
+Create a modern futuristic UI:
+- Dark theme with blue/purple gradients
+- Glassmorphism cards
+- Smooth hover animations
+- Responsive layout
+- Professional dashboard style
+
+Pages Required:
+1. Landing Page
+2. Product Listing Page
+3. Product Details Page
+4. Cart Page
+5. Admin Dashboard
+6. Orders Page
+
+Use:
+- Navbar
+- Sidebar for admin
+- Product cards
+- Charts/graphs for analytics
+- Toast notifications
+
+====================================================
+🛒 MAIN FEATURES
+====================================================
+
+CUSTOMER FEATURES:
+- Browse products
+- Search products
+- Filter by category
+- Add to cart
+- Place orders
+- View order history
+
+ADMIN FEATURES:
+- Add product
+- Edit product
+- Delete product
+- Manage inventory
+- View sales analytics
+- View customer orders
+
+ADVANCED FEATURES:
+- Low stock alerts
+- Auto inventory update after order placement
+- Sales statistics dashboard
+- Product availability indicator
+- Inventory heatmap or analytics section
+
+====================================================
+🗄️ DATABASE REQUIREMENTS (VERY IMPORTANT)
+====================================================
+
+Use MySQL database named:
+ecommerce_inventory_system
+
+Create these tables:
+
+1. customers
+- customer_id (Primary Key)
+- name
+- email
+- phone
+- address
+
+2. products
+- product_id (Primary Key)
+- product_name
+- category
+- price
+- stock_quantity
+- description
+
+3. orders
+- order_id (Primary Key)
+- customer_id (Foreign Key)
+- order_date
+- total_amount
+- status
+
+4. order_details
+- order_detail_id (Primary Key)
+- order_id (Foreign Key)
+- product_id (Foreign Key)
+- quantity
+- subtotal
+
+5. inventory_logs
+- log_id (Primary Key)
+- product_id (Foreign Key)
+- stock_before
+- stock_after
+- updated_at
+
+====================================================
+📌 DBMS CONCEPTS TO IMPLEMENT
+====================================================
+
+1. Primary Keys
+2. Foreign Keys
+3. Constraints
+4. Relationships
+5. Joins
+6. Aggregate Functions
+7. Normalization (up to 3NF)
+
+====================================================
+⚡ SQL REQUIREMENTS
+====================================================
+
+Provide:
+- CREATE TABLE queries
+- INSERT sample data queries
+- UPDATE queries
+- DELETE queries
+- SELECT queries
+
+Include advanced queries:
+- JOIN query
+- Aggregate query
+- Subquery
+- GROUP BY query
+
+Examples:
+- Top selling products
+- Total sales by category
+- Customers with highest purchases
+
+====================================================
+🔥 ADVANCED DATABASE FEATURE
+====================================================
+
+Create a TRIGGER:
+
+When an order is placed:
+- Automatically reduce stock_quantity in products table
+- Add entry into inventory_logs table
+
+====================================================
+📊 DASHBOARD REQUIREMENTS
+====================================================
+
+Admin dashboard should show:
+- Total Products
+- Total Orders
+- Total Revenue
+- Low Stock Products
+
+Add charts:
+- Sales trends
+- Inventory status
+
+====================================================
+📂 PROJECT STRUCTURE
+====================================================
+
+Organize project properly:
+
+/frontend
+  /css
+  /js
+  index.html
+
+/backend
+  server.js
+  db.js
+  routes/
+
+/database
+  schema.sql
+  sample_data.sql
+  triggers.sql
+
+====================================================
+⚙️ API REQUIREMENTS
+====================================================
+
+Create REST APIs for:
+- Products
+- Orders
+- Customers
+- Inventory
+
+Use:
+- GET
+- POST
+- PUT
+- DELETE
+
+====================================================
+🎯 FINAL REQUIREMENTS
+====================================================
+
+- Make project runnable directly in Replit
+- Include package.json
+- Include setup instructions
+- Add comments for easy understanding
+- Ensure frontend connects properly with backend and MySQL
+- Generate clean, maintainable code
+- Keep code beginner-friendly but professional

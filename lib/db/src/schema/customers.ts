@@ -1,0 +1,16 @@
+import { pgTable, text, serial } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod/v4";
+
+// customers table — stores customer profile information
+export const customersTable = pgTable("customers", {
+  customerId: serial("customer_id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone").notNull(),
+  address: text("address").notNull(),
+});
+
+export const insertCustomerSchema = createInsertSchema(customersTable).omit({ customerId: true });
+export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
+export type Customer = typeof customersTable.$inferSelect;

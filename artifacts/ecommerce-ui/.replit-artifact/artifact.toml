@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "E-Commerce Inventory & Sales System"
+version = "1.0.0"
+id = "artifacts/ecommerce-ui"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 3000
+
+[services.development]
+run = "pnpm --filter @workspace/ecommerce-ui run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ecommerce-ui", "run", "build" ]
+publicDir = "artifacts/ecommerce-ui/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "3000"
+BASE_PATH = "/"
