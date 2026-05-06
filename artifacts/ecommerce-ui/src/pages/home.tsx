@@ -7,7 +7,8 @@ import { ArrowRight, Zap, Shield, Database, ShoppingBag, Package } from "lucide-
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const { data: topProducts, isLoading } = useGetTopProducts({ limit: 4 });
+  const { data: topProductsRaw, isLoading } = useGetTopProducts({ limit: 4 });
+  const topProducts = Array.isArray(topProductsRaw) ? topProductsRaw : [];
 
   return (
     <Layout>
@@ -107,7 +108,7 @@ export default function Home() {
                   <Skeleton className="h-10 w-full mt-2 bg-white/5" />
                 </div>
               ))
-            ) : topProducts?.map((product) => (
+            ) : topProducts.map((product) => (
               <Link key={product.productId} href={`/products/${product.productId}`}>
                 <div className="group p-4 rounded-xl border border-white/10 glass-panel hover:border-primary/50 transition-all hover-elevate cursor-pointer h-full flex flex-col">
                   <div className="aspect-square mb-4 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-primary/30 transition-colors">
